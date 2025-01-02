@@ -1,15 +1,17 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UserRepository } from './user.repository';
 import { UserEntity } from './entities/user.entity';
 import { IRepository } from 'src/shared/interfaces/repository.interface';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 @Injectable()
 export class UserService {
   constructor(
     @Inject('IRepository<UserEntity>')
     private readonly userRepository: IRepository<UserEntity>,
+    @Inject(WINSTON_MODULE_NEST_PROVIDER)
+    private readonly logger: Logger,
   ) {}
 
   async createUser(dto: CreateUserDto): Promise<UserEntity> {
@@ -22,6 +24,7 @@ export class UserService {
   }
 
   async getAllUsers(): Promise<UserEntity[]> {
+    this.logger.log('Fetch all users.');
     return this.userRepository.findAll();
   }
 

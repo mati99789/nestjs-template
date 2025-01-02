@@ -3,11 +3,14 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import { log } from 'console';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   try {
     const app = await NestFactory.create(AppModule);
-
+    app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
+    app.use(cookieParser());
     app.useGlobalPipes(
       new ValidationPipe({
         transform: true,
@@ -35,7 +38,7 @@ async function bootstrap() {
   }
 }
 
-bootstrap().catch(err => {
+bootstrap().catch((err) => {
   console.error('Unhandled bootstrap error:', err);
   process.exit(1);
 });
