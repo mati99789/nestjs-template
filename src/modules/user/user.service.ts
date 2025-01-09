@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UserEntity } from './entities/user.entity';
+import { UserEntity, UserRole } from './entities/user.entity';
 import { IRepository } from 'src/shared/interfaces/repository.interface';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
@@ -19,7 +19,7 @@ export class UserService {
     user.name = dto.name;
     user.email = dto.email;
     user.password = dto.password;
-    user.role = 'user';
+    user.role = UserRole.USER;
     return this.userRepository.create(user);
   }
 

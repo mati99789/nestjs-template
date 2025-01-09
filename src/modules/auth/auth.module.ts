@@ -8,6 +8,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthController } from './auth.controller';
 import { GithubStrategy } from './github.strategy';
 import { UserRepository } from '../user/user.repository';
+import { BcryptHashService } from './hasService';
 
 @Module({
   imports: [
@@ -30,6 +31,10 @@ import { UserRepository } from '../user/user.repository';
     {
       provide: 'IRepository<UserEntity>',
       useClass: UserRepository,
+    },
+    {
+      provide: 'IHashService',
+      useClass: BcryptHashService,
     },
   ],
   exports: [AuthService],

@@ -6,5 +6,10 @@ export class UserEntity extends BaseEntity {
   password?: string;
   googleId?: string;
   githubId?: string;
-  role: 'admin' | 'user';
+  role: UserRole;
+}
+
+export enum UserRole {
+  ADMIN = 'admin',
+  USER = 'user',
 }

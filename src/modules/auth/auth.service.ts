@@ -2,8 +2,8 @@ import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserEntity } from '../user/entities/user.entity';
 import { IRepository } from '../../shared/interfaces/repository.interface';
-import * as bcrypt from 'bcrypt';
 import { Response } from 'express';
+import { IHashService } from './hasService';
 
 @Injectable()
 export class AuthService {
@@ -13,6 +13,8 @@ export class AuthService {
     private jwtService: JwtService,
     @Inject('IRepository<UserEntity>')
     private usersRepository: IRepository<UserEntity>,
+    @Inject('IHashService')
+    private hashService: IHashService,
   ) {}
 
   async register(email: string, password: string, response: Response) {
@@ -21,7 +23,7 @@ export class AuthService {
       throw new UnauthorizedException('Email already registered');
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await this.hashService.hash(password, 10);
     const newUser = await this.usersRepository.create({
       email,
       password: hashedPassword,
@@ -86,7 +88,10 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await this.hashService.compare(
+      password,
+      user.password,
+    );
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid credentials');
     }
