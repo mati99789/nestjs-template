@@ -1,6 +1,6 @@
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UserEntity } from '../user/entities/user.entity';
+import { UserEntity, UserRole } from '../user/entities/user.entity';
 import { IRepository } from '../../shared/interfaces/repository.interface';
 import { Response } from 'express';
 import { IHashService } from './hasService';
@@ -28,7 +28,7 @@ export class AuthService {
       email,
       password: hashedPassword,
       name: 'Test User',
-      role: 'user',
+      role: UserRole.USER,
     });
 
     return this.setAuthCookie(newUser, response);
@@ -46,7 +46,7 @@ export class AuthService {
         email: profile.email,
         name: profile.username || profile.name,
         [`${provider}Id`]: profile.id,
-        role: 'user',
+        role: UserRole.USER,
       });
     }
 
